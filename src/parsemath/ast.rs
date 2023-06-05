@@ -1,7 +1,7 @@
 /// This module contains list of valid AST nodes
 use std::error;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Node {
     Add(Box<Node>, Box<Node>),
     Subtract(Box<Node>, Box<Node>),
