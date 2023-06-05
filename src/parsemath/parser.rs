@@ -1,15 +1,11 @@
 /// This module reads tokens returned by Tokenizer and converts them into AST.
 
 use super::{tokenizer::Tokenizer, token::{Token, OperPrec}, ast::Node};
+use std::fmt;
 
 pub struct Parser<'a> {
     tokenizer: Tokenizer<'a>,
     current_token: Token
-}
-
-pub enum ParseErr {
-    UnableToParse(String),
-    InvalidOperator(String)
 }
 
 // Public methods
@@ -147,5 +143,28 @@ impl<'a> Parser<'a> {
         };
         self.current_token = next_token;
         Ok(())
+    }
+}
+
+#[derive(Debug)]
+pub enum ParseErr {
+    UnableToParse(String),
+    InvalidOperator(String)
+}
+
+impl fmt::Display for ParseErr {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self {
+            self::ParseErr::UnableToParse(e) => write!(f,
+                "Error in evaluating {}", e),
+            self::ParseErr::InvalidOperator(e) => write!(f,
+                "Error in evaluating {}", e),
+        }
+    }
+}
+
+impl std::convert::From<std::boxed::Box<dyn std::error::Error>> for ParseErr {
+    fn from(_evalerror: std::boxed::Box<dyn std::error::Error>) -> Self {
+        return ParseErr::UnableToParse("Unable to parse".into());
     }
 }
